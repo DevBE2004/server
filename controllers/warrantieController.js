@@ -45,15 +45,48 @@ const getOne = async (req, res) => {
   });
 };
 const getAll = async (req, res) => {
-  const response = await Warrantie.find();
-  // .populate({
-  //   path: "productId",
-  //   model: Product,
-  // });
+  const {
+    limit = 10,
+    page = 1,
+    sort = "-createdAt",
+    durationMonths,
+    terms,
+  } = req.query;
+
+  const queries = {};
+
+  if (durationMonths) {
+    queries.durationMonths = durationMonths;
+  }
+
+  if (terms) {
+    queries.terms = { $regex: terms, $options: "i" };
+  }
+
+  const total = await Warrantie.countDocuments(queries);
+  const totalPages = Math.ceil(total / limit);
+
+  const warranties = await Warrantie.find(queries)
+    .skip(Math.max(page - 1, 0) * limit)
+    .limit(limit)
+    .sort(sort)
+    .populate({
+      path: "productId",
+      model: Product,
+    });
+
   return res.json({
-    success: Boolean(response),
-    message: Boolean(response) ? "thành công." : "thất bại.",
-    data: response,
+    success: true,
+    message: warranties.length
+      ? "Lấy danh sách bảo hành thành công"
+      : "Không tìm thấy chính sách bảo hành nào",
+    data: warranties,
+    pagination: {
+      page: +page,
+      limit: +limit,
+      total: total,
+      totalPages: totalPages,
+    },
   });
 };
 
