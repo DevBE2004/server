@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "fakedb": "node fakeData.js"
   },
   "keywords": [],
   "author": "",
@@ -26,7 +27,7 @@
     "nodemailer": "^6.10.0"
   },
   "devDependencies": {
-    "faker-js": "^1.0.0",
+    "@faker-js/faker": "^9.6.0",
     "nodemon": "^3.1.9"
   }
 }
