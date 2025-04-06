@@ -3,8 +3,6 @@ const User = require("../models/user");
 const Product = require("../models/product");
 
 const addOrder = async (req, res) => {
-  console.log(req.body);
-
   const response = await Order.create(req.body);
   return res.json({
     success: Boolean(response),
@@ -45,7 +43,7 @@ const getAll = async (req, res) => {
 
   const queries = {};
 
-  if (status) queries.status = status;
+  if (status) queries.status = { $regex: new RegExp(status, "i") };
 
   const total = await Order.countDocuments(queries);
   const totalPages = Math.ceil(total / limit);

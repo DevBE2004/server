@@ -80,9 +80,23 @@ const getOne = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
-  const { limit = 10, page = 1, sort = "-createdAt", search = "" } = req.query;
+  const {
+    limit = 10,
+    page = 1,
+    sort = "-createdAt",
+    search = "",
+    name,
+    email,
+    mobile,
+    // role,
+  } = req.query;
 
   const queries = {};
+
+  if (name) queries.name = { $regex: new RegExp(name, "i") };
+  if (email) queries.email = { $regex: new RegExp(email, "i") };
+  if (mobile) queries.mobile = { $regex: new RegExp(mobile, "i") };
+  // if (role) queries.role = { $regex: new RegExp(role, "i") };
 
   if (search) {
     queries.$or = [
@@ -96,7 +110,7 @@ const getAll = async (req, res) => {
   const totalPages = Math.ceil(total / limit);
 
   const users = await User.find(queries)
-    .select("-password")
+    .select(["-password","-forgotPassCode"])
     .skip(Math.round(Math.max(page - 1, 0)) * limit)
     .limit(limit)
     .sort(sort);

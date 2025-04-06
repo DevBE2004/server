@@ -86,16 +86,22 @@ const getAll = async (req, res) => {
     maxPrice,
     priceType = "salePrice",
     search,
+    directory,
+    category,
   } = req.query;
 
   const queries = {};
 
   if (title) queries.title = { $regex: new RegExp(title, "i") };
+  if (directory) queries.directory = { $regex: new RegExp(directory, "i") };
+  if (category) queries.category = { $regex: new RegExp(category, "i") };
 
   if (search)
     queries.$or = [
       { title: { $regex: new RegExp(search, "i") } },
       { description: { $regex: new RegExp(search, "i") } },
+      { category: { $regex: new RegExp(search, "i") } },
+      { directory: { $regex: new RegExp(search, "i") } },
     ];
 
   if (minPrice || maxPrice) {
@@ -114,7 +120,7 @@ const getAll = async (req, res) => {
   const products = await Product.find(queries)
     .skip(Math.round(Math.max(page - 1, 0)) * limit)
     .limit(limit)
-    .sort(sort)
+    .sort(sort);
   return res.json({
     success: Boolean(products.length),
     message: Boolean(products.length)
