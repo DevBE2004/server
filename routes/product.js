@@ -5,6 +5,7 @@ const {
   stringReq,
   numberReq,
   boolean,
+  files,
 } = require("../middlewares/joiSchema");
 const { upload } = require("../configs/cloudinary");
 const router = require("express").Router();
@@ -22,6 +23,7 @@ router.post(
   ]),
   validateInfo(
     Joi.object({
+      productPics: files,
       title: stringReq,
       description: stringReq,
       category: stringReq,
@@ -47,6 +49,7 @@ router.put(
   ]),
   validateInfo(
     Joi.object({
+      productPics: files,
       title: stringReq,
       description: stringReq,
       category: stringReq,

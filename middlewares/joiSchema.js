@@ -25,6 +25,7 @@ const product = Joi.object({
   product: stringReq,
   quantity: numberReq,
 }).required();
+
 const category = Joi.array()
   .items(
     Joi.string().required().messages({
@@ -39,6 +40,18 @@ const category = Joi.array()
     "any.required": "Danh sách category là bắt buộc",
   });
 
+const file = Joi.object({
+  fieldname: Joi.string().required(),
+  originalname: Joi.string().required(),
+  encoding: Joi.string().required(),
+  mimetype: Joi.string().required(),
+  path: Joi.string().required(),
+  size: Joi.number().max(5 * 1024 * 1024),
+  filename: Joi.string().required(),
+}).required();
+
+const files = Joi.array().items(file).required();
+
 module.exports = {
   string,
   stringReq,
@@ -52,4 +65,6 @@ module.exports = {
   products,
   product,
   category,
+  file,
+  files,
 };

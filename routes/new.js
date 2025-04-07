@@ -3,7 +3,7 @@ const ctrl = require("../controllers/newController");
 const Joi = require("joi");
 const validateInfo = require("../middlewares/validateInfo");
 const { verifyToken, isAdmin } = require("../middlewares/verifyToken");
-const { stringReq } = require("../middlewares/joiSchema");
+const { stringReq, file } = require("../middlewares/joiSchema");
 const { upload } = require("../configs/cloudinary");
 
 router.post(
@@ -16,6 +16,7 @@ router.post(
       title: stringReq,
       description: stringReq,
       status: stringReq,
+      newPic: file,
     })
   ),
   ctrl.addNew
@@ -30,6 +31,7 @@ router.put(
       title: stringReq,
       description: stringReq,
       status: stringReq,
+      newPic: file,
     })
   ),
   ctrl.updateNew

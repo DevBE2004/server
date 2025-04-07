@@ -2,7 +2,6 @@ const { v2 } = require("cloudinary");
 const New = require("../models/new");
 
 const addNew = async (req, res) => {
-  if (!req.file) throw new Error("cần truyền vào tập tin ảnh.");
   const newRecord = await New.create({
     ...req.body,
     newPic: req.file.path,
@@ -27,7 +26,6 @@ const addNew = async (req, res) => {
   });
 };
 const updateNew = async (req, res) => {
-  if (!req.file) throw new Error("cần truyền vào tập tin ảnh.");
   const uploadResponse = await v2.uploader.upload(req.file.path, {
     public_id: `new_${req.params.id}`,
     overwrite: true,

@@ -39,7 +39,6 @@ const signUp = async (req, res) => {
 };
 
 const updatedProfile = async (req, res) => {
-  if (!req.file) throw new Error("cần truyền vào tập tin ảnh.");
   const uploadResponse = await v2.uploader.upload(req.file.path, {
     public_id: `user_${req.user.id}`,
     overwrite: true,
@@ -146,7 +145,6 @@ const logOut = (req, res) => {
 };
 
 const createUserByAdmin = async (req, res) => {
-  if (!req.file) throw new Error("cần truyền vào tập tin ảnh.");
   const alreadyUser = await User.exists({ email: req.body.email });
   if (Boolean(alreadyUser)) throw new Error("người dùng đã tồn tại !");
   const newUser = await User.create({ ...req.body, profilePic: req.file.path });
@@ -156,7 +154,7 @@ const createUserByAdmin = async (req, res) => {
     overwrite: true,
     folder: "app/user",
   });
-  const updatedRecord = await New.findByIdAndUpdate(
+  const updatedRecord = await User.findByIdAndUpdate(
     newUser._id,
     {
       profilePic: uploadResponse.secure_url,
@@ -171,7 +169,6 @@ const createUserByAdmin = async (req, res) => {
   });
 };
 const updateUserByAdmin = async (req, res) => {
-  if (!req.file) throw new Error("cần truyền vào tập tin ảnh.");
   const uploadResponse = await v2.uploader.upload(req.file.path, {
     public_id: `user_${req.params.id}`,
     overwrite: true,

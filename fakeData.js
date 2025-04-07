@@ -170,8 +170,8 @@ const generateUsers = async (count = 15) => {
     // Admin
     new User({
       name: "Quản Trị Viên",
-      email: "admin@nhakhoa.com",
-      password: await bcrypt.hash("admin123", 10),
+      email: "leantu2004@gmail.com",
+      password: await bcrypt.hash("leanhtu2004@", 10),
       role: "ADMIN",
       mobile: "09" + faker.string.numeric(8),
       profilePic: faker.image.avatar(),

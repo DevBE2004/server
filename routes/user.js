@@ -7,6 +7,7 @@ const {
   string,
   phone,
   product,
+  file,
 } = require("../middlewares/joiSchema");
 const validateInfo = require("../middlewares/validateInfo");
 const { verifyToken, isAdmin } = require("../middlewares/verifyToken");
@@ -35,6 +36,7 @@ router.put(
   validateInfo(
     Joi.object({
       email,
+      profilePic: file,
       name: stringReq,
       mobile: phone,
       address: string,
@@ -56,6 +58,7 @@ router.post(
   validateInfo(
     Joi.object({
       email,
+      profilePic: file,
       name: stringReq,
       password: stringReq,
       mobile: phone,
@@ -72,6 +75,7 @@ router.put(
   validateInfo(
     Joi.object({
       email,
+      profilePic: file,
       name: stringReq,
       password: stringReq,
       mobile: phone,
