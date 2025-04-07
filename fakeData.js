@@ -9,21 +9,23 @@ mongoose.connect(process.env.DB_URL, {
   useUnifiedTopology: true,
 });
 
-// Import models - Đảm bảo thứ tự import không gây lỗi
-const User = require("./models/user");
+// Import models
+const Category = require("./models/category");
+const Directory = require("./models/directory");
 const Product = require("./models/product");
+const User = require("./models/user");
 const Order = require("./models/order");
 const Warrantie = require("./models/warrantie");
 
-// Danh mục và dữ liệu mẫu
+// ==================== DỮ LIỆU MẪU ====================
 const directories = [
   "Chăm sóc răng",
-  "Chỉnh nha",
+  "Chỉnh nha", 
   "Phẫu thuật",
   "Vật liệu nha khoa",
   "Thiết bị phòng khám",
   "Dụng cụ nha khoa",
-  "Vệ sinh răng miệng",
+  "Vệ sinh răng miệng"
 ];
 
 const categories = [
@@ -36,7 +38,7 @@ const categories = [
   "Thiết bị phòng khám",
   "Vật tư tiêu hao",
   "Dụng cụ nội nha",
-  "Dụng cụ nha chu",
+  "Dụng cụ nha chu"
 ];
 
 const productNames = [
@@ -95,62 +97,77 @@ const productNames = [
   "Bộ dụng cụ chữa tủy",
   "Bộ dụng cụ chữa nha chu",
   "Bộ dụng cụ gây tê",
-  "Bộ dụng cụ tiểu phẫu",
+  "Bộ dụng cụ tiểu phẫu"
 ];
 
-const getDirectoryForCategory = (category) => {
-  if (
-    category.includes("tẩy trắng") ||
-    category.includes("răng thẩm mỹ") ||
-    category.includes("hàn răng")
-  ) {
+// ==================== HÀM HỖ TRỢ ====================
+const getDirectoryForCategory = (categoryTitle) => {
+  if (categoryTitle.includes("tẩy trắng") || categoryTitle.includes("răng thẩm mỹ") || categoryTitle.includes("hàn răng")) {
     return "Chăm sóc răng";
-  } else if (category.includes("chỉnh nha")) {
+  } else if (categoryTitle.includes("chỉnh nha")) {
     return "Chỉnh nha";
-  } else if (category.includes("phẫu thuật")) {
+  } else if (categoryTitle.includes("phẫu thuật")) {
     return "Phẫu thuật";
-  } else if (category.includes("Vật liệu")) {
+  } else if (categoryTitle.includes("Vật liệu")) {
     return "Vật liệu nha khoa";
-  } else if (category.includes("Thiết bị")) {
+  } else if (categoryTitle.includes("Thiết bị")) {
     return "Thiết bị phòng khám";
-  } else if (category.includes("tiêu hao") || category.includes("vệ sinh")) {
+  } else if (categoryTitle.includes("tiêu hao") || categoryTitle.includes("vệ sinh")) {
     return "Vệ sinh răng miệng";
   } else {
     return "Dụng cụ nha khoa";
   }
 };
 
-// Tạo user giả
+// ==================== TẠO DỮ LIỆU ====================
+// Tạo danh mục
+const generateCategories = async () => {
+  const categoryDocs = categories.map(title => ({ title }));
+  return Category.insertMany(categoryDocs);
+};
+
+// Tạo thư mục
+const generateDirectories = async (categories) => {
+  const directoryDocs = directories.map(title => {
+    const matchingCategories = categories.filter(cat => 
+      getDirectoryForCategory(cat.title) === title
+    );
+    return {
+      title,
+      category: matchingCategories.map(cat => cat._id)
+    };
+  });
+  return Directory.insertMany(directoryDocs);
+};
+
+// Tạo người dùng
 const generateUsers = async (count = 15) => {
-  const users = [];
+  const users = [
+    // Admin
+    new User({
+      name: "Quản Trị Viên",
+      email: "admin@nhakhoa.com",
+      password: await bcrypt.hash("admin123", 10),
+      role: "ADMIN",
+      mobile: "09" + faker.string.numeric(8),
+      profilePic: faker.image.avatar(),
+      address: faker.location.streetAddress(true),
+    }),
+    // Bác sĩ
+    new User({
+      name: "Bác Sĩ Nguyễn Văn A",
+      email: "bacsi@nhakhoa.com",
+      password: await bcrypt.hash("bacsi123", 10),
+      role: "USER",
+      mobile: "09" + faker.string.numeric(8),
+      profilePic: faker.image.avatar(),
+      address: faker.location.streetAddress(true),
+    })
+  ];
 
-  // Tạo admin
-  const admin = new User({
-    name: "Quản Trị Viên",
-    email: "admin@nhakhoa.com",
-    password: await bcrypt.hash("admin123", 10),
-    role: "ADMIN",
-    mobile: "09" + faker.string.numeric(8),
-    profilePic: faker.image.avatar(),
-    address: faker.location.streetAddress(true),
-  });
-  users.push(admin);
-
-  // Tạo bác sĩ
-  const doctor = new User({
-    name: "Bác Sĩ Nguyễn Văn A",
-    email: "bacsi@nhakhoa.com",
-    password: await bcrypt.hash("bacsi123", 10),
-    role: "USER",
-    mobile: "09" + faker.string.numeric(8),
-    profilePic: faker.image.avatar(),
-    address: faker.location.streetAddress(true),
-  });
-  users.push(doctor);
-
-  // Tạo user thường
+  // Người dùng thường
   for (let i = 0; i < count - 2; i++) {
-    const user = new User({
+    users.push(new User({
       name: faker.person.fullName(),
       email: faker.internet.email(),
       password: await bcrypt.hash("user123", 10),
@@ -158,139 +175,119 @@ const generateUsers = async (count = 15) => {
       mobile: "09" + faker.string.numeric(8),
       profilePic: faker.image.avatar(),
       address: faker.location.streetAddress(true),
-    });
-    users.push(user);
+    }));
   }
 
   return User.insertMany(users);
 };
 
-// Tạo sản phẩm giả
-const generateProducts = async (count = 50) => {
+// Tạo sản phẩm
+const generateProducts = async (categories, directories, count = 70) => {
   const products = [];
+  
+  // Tạo map để tra cứu directory theo tên
+  const directoryMap = {};
+  directories.forEach(dir => {
+    directoryMap[dir.title] = dir._id;
+  });
 
   for (let i = 0; i < count; i++) {
-    const originalPrice = faker.commerce.price({
-      min: 50000,
-      max: 5000000,
-      dec: 0,
-    });
-    const salePrice = Math.round(
-      originalPrice * (1 - faker.number.float({ min: 0.05, max: 0.3 }))
-    );
     const category = categories[i % categories.length];
-    const directory = getDirectoryForCategory(category);
-
-    const product = new Product({
+    const directoryName = getDirectoryForCategory(category.title);
+    
+    products.push(new Product({
       title: productNames[i % productNames.length],
-      description: `Sản phẩm ${
-        productNames[i % productNames.length]
-      } chất lượng cao, xuất xứ rõ ràng, phù hợp cho nha khoa. ${faker.lorem.paragraph()}`,
-      category: category,
-      directory: directory,
-      originalPrice: originalPrice,
-      salePrice: salePrice,
-      productPics: Array.from({ length: 3 }, () =>
-        faker.image.urlLoremFlickr({ category: "dental" })
-      ),
+      description: `${productNames[i % productNames.length]} chất lượng cao, xuất xứ rõ ràng. ${faker.lorem.paragraph()}`,
+      category: category._id,
+      directory: directoryMap[directoryName],
+      originalPrice: faker.commerce.price({ min: 50000, max: 5000000, dec: 0 }),
+      salePrice: faker.commerce.price({ min: 40000, max: 4500000, dec: 0 }),
+      productPics: Array(3).fill().map(() => faker.image.urlLoremFlickr({ category: "medical" })),
       quantity: faker.number.int({ min: 5, max: 100 }),
       isLiquidation: faker.datatype.boolean({ probability: 0.15 }),
-    });
-    products.push(product);
+    }));
   }
 
   return Product.insertMany(products);
 };
 
-// Tạo bảo hành giả
-const generateWarranties = async (products) => {
+// Tạo bảo hành
+const generateWarranties = async (products, categories) => {
   const warranties = [];
-  const eligibleProducts = products.filter(
-    (product) =>
-      !product.category.includes("Vật tư tiêu hao") &&
-      !product.category.includes("tiêu hao")
-  );
+  
+  // Tạo map để tra cứu category theo ID
+  const categoryMap = {};
+  categories.forEach(cat => {
+    categoryMap[cat._id.toString()] = cat.title;
+  });
+
+  const eligibleProducts = products.filter(product => {
+    const categoryTitle = categoryMap[product.category.toString()];
+    return !categoryTitle.includes("tiêu hao");
+  });
 
   for (const product of eligibleProducts) {
     if (faker.datatype.boolean({ probability: 0.8 })) {
-      const warrantie = new Warrantie({
+      warranties.push(new Warrantie({
         productId: product._id,
         durationMonths: faker.helpers.arrayElement([6, 12, 18, 24, 36]),
-        terms: `Điều kiện bảo hành cho sản phẩm ${
-          product.title
-        }:\n1. Bảo hành ${faker.helpers.arrayElement([
-          "lỗi kỹ thuật",
-          "hư hỏng do nhà sản xuất",
-        ])}\n2. ${faker.lorem.sentence()}\n3. ${faker.lorem.sentence()}`,
-      });
-      warranties.push(warrantie);
+        terms: `Bảo hành ${product.title}:\n1. ${faker.lorem.sentence()}\n2. ${faker.lorem.sentence()}`
+      }));
     }
   }
 
   return Warrantie.insertMany(warranties);
 };
 
-// Tạo đơn hàng giả
+// Tạo đơn hàng
 const generateOrders = async (users, products, count = 100) => {
   const orders = [];
 
   for (let i = 0; i < count; i++) {
-    const user = faker.helpers.arrayElement(users);
-    const productCount = faker.number.int({ min: 1, max: 6 });
-    const orderProducts = [];
-
-    // Chọn sản phẩm ngẫu nhiên không trùng lặp
-    const selectedProducts = faker.helpers.arrayElements(
-      products,
-      productCount
-    );
-
-    for (const product of selectedProducts) {
-      orderProducts.push({
+    const orderProducts = faker.helpers.arrayElements(products, faker.number.int({ min: 1, max: 6 }))
+      .map(product => ({
         product: product._id,
-        quantity: faker.number.int({ min: 1, max: 5 }),
-      });
-    }
+        quantity: faker.number.int({ min: 1, max: 5 })
+      }));
 
-    const order = new Order({
+    orders.push(new Order({
       products: orderProducts,
       status: faker.helpers.arrayElement(["chưa xử lí", "thành công"]),
-      orderBy: user._id,
-      orderIdMomo: `MOMO${faker.string.numeric(10)}`,
-    });
-    orders.push(order);
+      orderBy: faker.helpers.arrayElement(users)._id,
+      orderIdMomo: `MOMO${faker.string.numeric(10)}`
+    }));
   }
 
   return Order.insertMany(orders);
 };
 
-// Hàm chính để tạo dữ liệu
+// ==================== HÀM CHÍNH ====================
 const generateAllData = async () => {
   try {
-    // Xóa dữ liệu cũ
+    console.log("Đang xóa dữ liệu cũ...");
     await mongoose.connection.dropDatabase();
-    console.log("Đã xóa dữ liệu cũ");
 
-    // Tạo dữ liệu mới theo thứ tự đúng
+    console.log("Đang tạo danh mục...");
+    const categories = await generateCategories();
+    
+    console.log("Đang tạo thư mục...");
+    const directories = await generateDirectories(categories);
+    
     console.log("Đang tạo người dùng...");
     const users = await generateUsers();
-    console.log(`Đã tạo ${users.length} người dùng`);
-
+    
     console.log("Đang tạo sản phẩm...");
-    const products = await generateProducts();
-    console.log(`Đã tạo ${products.length} sản phẩm`);
-
-    console.log("Đang tạo chính sách bảo hành...");
-    const warranties = await generateWarranties(products);
-    console.log(`Đã tạo ${warranties.length} chính sách bảo hành`);
-
+    const products = await generateProducts(categories, directories, 55);
+    
+    console.log("Đang tạo bảo hành...");
+    await generateWarranties(products, categories);
+    
     console.log("Đang tạo đơn hàng...");
-    const orders = await generateOrders(users, products);
-    console.log(`Đã tạo ${orders.length} đơn hàng`);
-
-    console.log("Hoàn thành tạo dữ liệu giả!");
+    await generateOrders(users, products, 100);
+    
+    console.log("✅ Tạo dữ liệu giả thành công!");
   } catch (error) {
-    console.error("Lỗi khi tạo dữ liệu:", error);
+    console.error("❌ Lỗi khi tạo dữ liệu:", error);
   } finally {
     mongoose.connection.close();
   }

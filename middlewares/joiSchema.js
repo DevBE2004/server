@@ -41,6 +41,20 @@ const product = Joi.object({
   product: stringReq,
   quantity: numberReq,
 }).required();
+const category = Joi.array()
+  .items(
+    Joi.string().required().messages({
+      "string.empty": "Mục category không được để trống",
+      "any.required": "Yêu cầu có mục category",
+    })
+  )
+  .min(1)
+  .required()
+  .messages({
+    "array.min": "Cần ít nhất một category",
+    "any.required": "Danh sách category là bắt buộc",
+  });
+
 module.exports = {
   string,
   stringReq,
@@ -55,4 +69,6 @@ module.exports = {
   productPicSchema,
   products,
   product,
+  category,
 };
+

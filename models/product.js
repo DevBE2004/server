@@ -13,10 +13,7 @@ var productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    category: {
-      type: String,
-      required: true,
-    },
+    category: { type: mongoose.Types.ObjectId, ref: "Category" },
     originalPrice: {
       type: Number,
       required: true,
@@ -30,7 +27,7 @@ var productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    directory: { type: String, required: true },
+    directory: { type: mongoose.Types.ObjectId, ref: "Directory" },
     isLiquidation: {
       type: Boolean,
       default: false,

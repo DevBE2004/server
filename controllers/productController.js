@@ -93,15 +93,13 @@ const getAll = async (req, res) => {
   const queries = {};
 
   if (title) queries.title = { $regex: new RegExp(title, "i") };
-  if (directory) queries.directory = { $regex: new RegExp(directory, "i") };
-  if (category) queries.category = { $regex: new RegExp(category, "i") };
+  if (directory) queries.directory = directory;
+  if (category) queries.category = category;
 
   if (search)
     queries.$or = [
       { title: { $regex: new RegExp(search, "i") } },
       { description: { $regex: new RegExp(search, "i") } },
-      { category: { $regex: new RegExp(search, "i") } },
-      { directory: { $regex: new RegExp(search, "i") } },
     ];
 
   if (minPrice || maxPrice) {

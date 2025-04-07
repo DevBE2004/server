@@ -7,11 +7,15 @@ const productRoutes = require("./product");
 const paymentRoutes = require("./payment");
 const warrantieRoutes = require("./warrantie");
 const orderRoutes = require("./order");
+const categoryRoutes = require("./category");
+const directoryRoutes = require("./directory");
 const initRoutes = (app) => {
   app.use("/api/user", userRoutes);
   app.use("/api/product", productRoutes);
   app.use("/api/warrantie", warrantieRoutes);
   app.use("/api/order", orderRoutes);
+  app.use("/api/category", categoryRoutes);
+  app.use("/api/directory", directoryRoutes);
   app.use("/api/payment", paymentRoutes);
 
   app.use(errorBadRequest);

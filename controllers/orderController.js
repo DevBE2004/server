@@ -43,7 +43,7 @@ const getAll = async (req, res) => {
 
   const queries = {};
 
-  if (status) queries.status = { $regex: new RegExp(status, "i") };
+  if (status) queries.status = status;
 
   const total = await Order.countDocuments(queries);
   const totalPages = Math.ceil(total / limit);
