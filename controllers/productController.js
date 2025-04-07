@@ -1,4 +1,6 @@
 const Product = require("../models/product");
+const Category = require("../models/category");
+const Directory = require("../models/directory");
 const { v2 } = require("../configs/cloudinary");
 const { extractPublicId } = require("../utils/helper");
 
@@ -118,7 +120,11 @@ const getAll = async (req, res) => {
   const products = await Product.find(queries)
     .skip(Math.round(Math.max(page - 1, 0)) * limit)
     .limit(limit)
-    .sort(sort);
+    .sort(sort)
+    .populate([
+      { path: "category", model: Category },
+      { path: "directory", model: Directory },
+    ]);
   return res.json({
     success: Boolean(products.length),
     message: Boolean(products.length)

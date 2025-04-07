@@ -1,5 +1,5 @@
 const Directory = require("../models/directory");
-
+const Category = require("../models/category");
 const addDirectory = async (req, res) => {
   const alreadyDiretory = await Directory.exists({ title: req.body.title });
   if (Boolean(alreadyDiretory)) throw new Error("loại sản phẩm đã tồn tại.");
@@ -28,7 +28,10 @@ const deleteDirectory = async (req, res) => {
   });
 };
 const getAll = async (req, res) => {
-  const response = await Directory.find();
+  const response = await Directory.find().populate({
+    path: "category",
+    model: Category,
+  });
   return res.json({
     success: Boolean(response),
     message: Boolean(response) ? "thành công." : "không có danh mục.",
