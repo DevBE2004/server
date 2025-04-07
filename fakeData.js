@@ -16,6 +16,7 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Order = require("./models/order");
 const Warrantie = require("./models/warrantie");
+const New = require("./models/new"); // Thêm model New
 
 // ==================== DỮ LIỆU MẪU ====================
 const directories = [
@@ -98,6 +99,29 @@ const productNames = [
   "Bộ dụng cụ chữa nha chu",
   "Bộ dụng cụ gây tê",
   "Bộ dụng cụ tiểu phẫu"
+];
+
+const newsTitles = [
+  "Công nghệ mới trong điều trị nha chu năm 2023",
+  "Hướng dẫn chăm sóc răng miệng đúng cách",
+  "Xu hướng chỉnh nha trong suốt tại Việt Nam",
+  "Vật liệu hàn răng thế hệ mới - Bước đột phá trong nha khoa",
+  "Làm thế nào để chọn bàn chải đánh răng phù hợp",
+  "Những sai lầm thường gặp khi vệ sinh răng miệng",
+  "Cấy ghép Implant không đau - Công nghệ hiện đại",
+  "Tẩy trắng răng an toàn - Những điều cần biết",
+  "Phòng ngừa sâu răng ở trẻ em - Bí quyết từ chuyên gia",
+  "Chế độ dinh dưỡng tốt cho răng miệng",
+  "Các bệnh răng miệng thường gặp và cách phòng tránh",
+  "Chăm sóc răng miệng cho người niềng răng",
+  "Công nghệ scan răng 3D - Bước tiến mới trong nha khoa",
+  "Vì sao cần lấy cao răng định kỳ?",
+  "Hướng dẫn sử dụng chỉ nha khoa đúng cách",
+  "Những điều cần biết về răng khôn",
+  "Phục hình răng sứ thẩm mỹ - Giải pháp hoàn hảo cho nụ cười",
+  "Chăm sóc răng miệng cho bà bầu đúng cách",
+  "Tác hại của việc nghiến răng khi ngủ và cách khắc phục",
+  "Công nghệ điều trị tủy không đau - Giải pháp mới"
 ];
 
 // ==================== HÀM HỖ TRỢ ====================
@@ -261,6 +285,22 @@ const generateOrders = async (users, products, count = 100) => {
   return Order.insertMany(orders);
 };
 
+// Tạo tin tức
+const generateNews = async (count = 20) => {
+  const news = [];
+  
+  for (let i = 0; i < count; i++) {
+    news.push(new New({
+      title: newsTitles[i % newsTitles.length],
+      description: faker.lorem.paragraphs(3, '\n\n'),
+      newPic: faker.image.urlLoremFlickr({ category: 'medical' }),
+      status: faker.helpers.arrayElement(["ENABLE", "DISABLE"])
+    }));
+  }
+  
+  return New.insertMany(news);
+};
+
 // ==================== HÀM CHÍNH ====================
 const generateAllData = async () => {
   try {
@@ -284,6 +324,9 @@ const generateAllData = async () => {
     
     console.log("Đang tạo đơn hàng...");
     await generateOrders(users, products, 100);
+    
+    console.log("Đang tạo tin tức...");
+    await generateNews();
     
     console.log("✅ Tạo dữ liệu giả thành công!");
   } catch (error) {

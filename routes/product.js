@@ -4,7 +4,6 @@ const { verifyToken, isAdmin } = require("../middlewares/verifyToken");
 const {
   stringReq,
   numberReq,
-  productPicSchema,
   boolean,
 } = require("../middlewares/joiSchema");
 const { upload } = require("../configs/cloudinary");
@@ -28,7 +27,6 @@ router.post(
       category: stringReq,
       originalPrice: numberReq,
       salePrice: numberReq,
-      productPics: productPicSchema,
       quantity: numberReq,
       isLiquidation: boolean,
       directory: stringReq,
@@ -55,7 +53,6 @@ router.put(
       originalPrice: numberReq,
       salePrice: numberReq,
       quantity: numberReq,
-      productPics: productPicSchema,
       isLiquidation: boolean,
       directory: stringReq,
     })

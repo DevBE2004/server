@@ -1,33 +1,46 @@
 const router = require("express").Router();
+const ctrl = require("../controllers/newController");
 const Joi = require("joi");
-const ctrl = require("../controllers/categoryController");
 const validateInfo = require("../middlewares/validateInfo");
 const { verifyToken, isAdmin } = require("../middlewares/verifyToken");
 const { stringReq } = require("../middlewares/joiSchema");
+const { upload } = require("../configs/cloudinary");
 
 router.post(
-  "/add-category",
+  "/add-new",
   verifyToken,
   isAdmin,
+  upload.single("newPic"),
   validateInfo(
     Joi.object({
       title: stringReq,
+      description: stringReq,
+      status: stringReq,
     })
   ),
-  ctrl.addCategory
+  ctrl.addNew
 );
 router.put(
-  "/update-category/:id",
+  "/update-new/:id",
   verifyToken,
   isAdmin,
+  upload.single("newPic"),
   validateInfo(
     Joi.object({
       title: stringReq,
+      description: stringReq,
+      status: stringReq,
     })
   ),
-  ctrl.updateCategory
+  ctrl.updateNew
 );
-router.delete("/delete-category/:id", ctrl.deleteCategory);
+router.delete(
+  "/delete-new/:id",
+  verifyToken,
+  isAdmin,
+
+  ctrl.deleteNew
+);
 router.get("", ctrl.getAll);
 
 module.exports = router;

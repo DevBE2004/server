@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const ctrl = require("../controllers/directory");
+const ctrl = require("../controllers/directoryController");
 const validateInfo = require("../middlewares/validateInfo");
 const { verifyToken, isAdmin } = require("../middlewares/verifyToken");
 const { category, stringReq } = require("../middlewares/joiSchema");

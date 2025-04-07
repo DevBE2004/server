@@ -5,12 +5,11 @@ const { v2 } = require("../configs/cloudinary");
 const { extractPublicId } = require("../utils/helper");
 
 const addProductByAdmin = async (req, res) => {
-  const files = req.files;
-  if (!files) throw new Error("cần truyền vào những tập tin ảnh");
+  if (!req.files) throw new Error("cần truyền vào những tập tin ảnh");
   const alreadyProduct = await Product.exists({ title: req.body.title });
   if (alreadyProduct) throw new Error("sản phẩm đã tồn tại.");
 
-  const uploadPromises = files.productPics.map((file) =>
+  const uploadPromises = req.files.productPics.map((file) =>
     v2.uploader.upload(file.path, {
       folder: "app/products",
     })
@@ -29,6 +28,7 @@ const addProductByAdmin = async (req, res) => {
   });
 };
 const updateProductByAdmin = async (req, res) => {
+  if (!req.files) throw new Error("cần truyền vào những tập tin ảnh");
   const productId = req.params.id;
   const product = await Product.findById(productId);
 

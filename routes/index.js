@@ -9,6 +9,8 @@ const warrantieRoutes = require("./warrantie");
 const orderRoutes = require("./order");
 const categoryRoutes = require("./category");
 const directoryRoutes = require("./directory");
+const newRoutes = require("./new");
+
 const initRoutes = (app) => {
   app.use("/api/user", userRoutes);
   app.use("/api/product", productRoutes);
@@ -17,6 +19,7 @@ const initRoutes = (app) => {
   app.use("/api/category", categoryRoutes);
   app.use("/api/directory", directoryRoutes);
   app.use("/api/payment", paymentRoutes);
+  app.use("/api/new", newRoutes);
 
   app.use(errorBadRequest);
   app.use(errorInternalServer);

@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const axios = require("axios");
 const Order = require("../models/order");
 const Product = require("../models/product");
+const User = require("../models/user");
 const { generateOrderId } = require("../utils/helper");
 
 const createPayment = async (req, res) => {
@@ -113,7 +114,11 @@ const ipnMomo = async (req, res) => {
           orderIdMomo: req.body.orderId,
         }
       );
-
+      const userPromise = User.findByIdAndUpdate(
+        orderBy,
+        { cart: [] },
+        { new: true }
+      );
       const productUpdates = products.map(async (item) => {
         const product = await Product.findById(item.productId);
         if (!product) {
@@ -127,7 +132,7 @@ const ipnMomo = async (req, res) => {
         );
       });
 
-      await Promise.all([orderPromise, ...productUpdates]);
+      await Promise.all([orderPromise, ...productUpdates, userPromise]);
 
       console.log(
         `Đã xác nhận đơn hàng ${req.body.orderId} qua IPN. Sản phẩm:`,

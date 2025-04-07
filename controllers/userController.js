@@ -39,7 +39,8 @@ const signUp = async (req, res) => {
 };
 
 const updatedProfile = async (req, res) => {
-  const uploadResponse = await v2.uploader.upload(req.file?.path, {
+  if (!req.file) throw new Error("cần truyền vào tập tin ảnh.");
+  const uploadResponse = await v2.uploader.upload(req.file.path, {
     public_id: `user_${req.user.id}`,
     overwrite: true,
     folder: "app/user",
@@ -110,7 +111,7 @@ const getAll = async (req, res) => {
   const totalPages = Math.ceil(total / limit);
 
   const users = await User.find(queries)
-    .select(["-password","-forgotPassCode"])
+    .select(["-password", "-forgotPassCode"])
     .skip(Math.round(Math.max(page - 1, 0)) * limit)
     .limit(limit)
     .sort(sort);
@@ -145,18 +146,33 @@ const logOut = (req, res) => {
 };
 
 const createUserByAdmin = async (req, res) => {
+  if (!req.file) throw new Error("cần truyền vào tập tin ảnh.");
   const alreadyUser = await User.exists({ email: req.body.email });
   if (Boolean(alreadyUser)) throw new Error("người dùng đã tồn tại !");
-  const newUser = await User.create(req.body);
+  const newUser = await User.create({ ...req.body, profilePic: req.file.path });
+
+  const uploadResponse = await v2.uploader.upload(req.file.path, {
+    public_id: `user_${newUser._id}`,
+    overwrite: true,
+    folder: "app/user",
+  });
+  const updatedRecord = await New.findByIdAndUpdate(
+    newUser._id,
+    {
+      profilePic: uploadResponse.secure_url,
+    },
+    { new: true }
+  );
   return res.json({
-    success: Boolean(newUser),
-    message: Boolean(newUser)
+    success: Boolean(updatedRecord),
+    message: Boolean(updatedRecord)
       ? "tạo thành công."
       : "xảy ra một lỗi vui lòng thử lại!",
   });
 };
 const updateUserByAdmin = async (req, res) => {
-  const uploadResponse = await v2.uploader.upload(req.file?.path, {
+  if (!req.file) throw new Error("cần truyền vào tập tin ảnh.");
+  const uploadResponse = await v2.uploader.upload(req.file.path, {
     public_id: `user_${req.params.id}`,
     overwrite: true,
     folder: "app",

@@ -5,9 +5,7 @@ const {
   stringReq,
   email,
   string,
-  profilePicFile,
   phone,
-  numberReq,
   product,
 } = require("../middlewares/joiSchema");
 const validateInfo = require("../middlewares/validateInfo");
@@ -39,7 +37,6 @@ router.put(
       email,
       name: stringReq,
       mobile: phone,
-      profilePic: profilePicFile,
       address: string,
     })
   ),
@@ -55,6 +52,7 @@ router.post(
   "/add-user",
   verifyToken,
   isAdmin,
+  upload.single("profilePic"),
   validateInfo(
     Joi.object({
       email,
@@ -76,7 +74,6 @@ router.put(
       email,
       name: stringReq,
       password: stringReq,
-      profilePic: string,
       mobile: phone,
       address: string,
     })

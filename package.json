@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "fakedb": "node fakeData.js"
+    "dev": "node fakeData.js && nodemon server.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
