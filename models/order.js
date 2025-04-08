@@ -10,8 +10,8 @@ const orderSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      default: "chưa xử lí",
-      enum: ["chưa xử lí", "thành công"],
+      default: "UNPAID",
+      enum: ["UNPAID", "PAID"],
     },
     orderBy: {
       type: mongoose.Types.ObjectId,

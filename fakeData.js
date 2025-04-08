@@ -21,12 +21,12 @@ const New = require("./models/new"); // Thêm model New
 // ==================== DỮ LIỆU MẪU ====================
 const directories = [
   "Chăm sóc răng",
-  "Chỉnh nha", 
+  "Chỉnh nha",
   "Phẫu thuật",
   "Vật liệu nha khoa",
   "Thiết bị phòng khám",
   "Dụng cụ nha khoa",
-  "Vệ sinh răng miệng"
+  "Vệ sinh răng miệng",
 ];
 
 const categories = [
@@ -39,7 +39,7 @@ const categories = [
   "Thiết bị phòng khám",
   "Vật tư tiêu hao",
   "Dụng cụ nội nha",
-  "Dụng cụ nha chu"
+  "Dụng cụ nha chu",
 ];
 
 const productNames = [
@@ -98,7 +98,7 @@ const productNames = [
   "Bộ dụng cụ chữa tủy",
   "Bộ dụng cụ chữa nha chu",
   "Bộ dụng cụ gây tê",
-  "Bộ dụng cụ tiểu phẫu"
+  "Bộ dụng cụ tiểu phẫu",
 ];
 
 const newsTitles = [
@@ -121,12 +121,16 @@ const newsTitles = [
   "Phục hình răng sứ thẩm mỹ - Giải pháp hoàn hảo cho nụ cười",
   "Chăm sóc răng miệng cho bà bầu đúng cách",
   "Tác hại của việc nghiến răng khi ngủ và cách khắc phục",
-  "Công nghệ điều trị tủy không đau - Giải pháp mới"
+  "Công nghệ điều trị tủy không đau - Giải pháp mới",
 ];
 
 // ==================== HÀM HỖ TRỢ ====================
 const getDirectoryForCategory = (categoryTitle) => {
-  if (categoryTitle.includes("tẩy trắng") || categoryTitle.includes("răng thẩm mỹ") || categoryTitle.includes("hàn răng")) {
+  if (
+    categoryTitle.includes("tẩy trắng") ||
+    categoryTitle.includes("răng thẩm mỹ") ||
+    categoryTitle.includes("hàn răng")
+  ) {
     return "Chăm sóc răng";
   } else if (categoryTitle.includes("chỉnh nha")) {
     return "Chỉnh nha";
@@ -136,7 +140,10 @@ const getDirectoryForCategory = (categoryTitle) => {
     return "Vật liệu nha khoa";
   } else if (categoryTitle.includes("Thiết bị")) {
     return "Thiết bị phòng khám";
-  } else if (categoryTitle.includes("tiêu hao") || categoryTitle.includes("vệ sinh")) {
+  } else if (
+    categoryTitle.includes("tiêu hao") ||
+    categoryTitle.includes("vệ sinh")
+  ) {
     return "Vệ sinh răng miệng";
   } else {
     return "Dụng cụ nha khoa";
@@ -146,19 +153,19 @@ const getDirectoryForCategory = (categoryTitle) => {
 // ==================== TẠO DỮ LIỆU ====================
 // Tạo danh mục
 const generateCategories = async () => {
-  const categoryDocs = categories.map(title => ({ title }));
+  const categoryDocs = categories.map((title) => ({ title }));
   return Category.insertMany(categoryDocs);
 };
 
 // Tạo thư mục
 const generateDirectories = async (categories) => {
-  const directoryDocs = directories.map(title => {
-    const matchingCategories = categories.filter(cat => 
-      getDirectoryForCategory(cat.title) === title
+  const directoryDocs = directories.map((title) => {
+    const matchingCategories = categories.filter(
+      (cat) => getDirectoryForCategory(cat.title) === title
     );
     return {
       title,
-      category: matchingCategories.map(cat => cat._id)
+      category: matchingCategories.map((cat) => cat._id),
     };
   });
   return Directory.insertMany(directoryDocs);
@@ -186,20 +193,22 @@ const generateUsers = async (count = 15) => {
       mobile: "09" + faker.string.numeric(8),
       profilePic: faker.image.avatar(),
       address: faker.location.streetAddress(true),
-    })
+    }),
   ];
 
   // Người dùng thường
   for (let i = 0; i < count - 2; i++) {
-    users.push(new User({
-      name: faker.person.fullName(),
-      email: faker.internet.email(),
-      password: await bcrypt.hash("user123", 10),
-      role: "USER",
-      mobile: "09" + faker.string.numeric(8),
-      profilePic: faker.image.avatar(),
-      address: faker.location.streetAddress(true),
-    }));
+    users.push(
+      new User({
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        password: await bcrypt.hash("user123", 10),
+        role: "USER",
+        mobile: "09" + faker.string.numeric(8),
+        profilePic: faker.image.avatar(),
+        address: faker.location.streetAddress(true),
+      })
+    );
   }
 
   return User.insertMany(users);
@@ -208,28 +217,38 @@ const generateUsers = async (count = 15) => {
 // Tạo sản phẩm
 const generateProducts = async (categories, directories, count = 70) => {
   const products = [];
-  
+
   // Tạo map để tra cứu directory theo tên
   const directoryMap = {};
-  directories.forEach(dir => {
+  directories.forEach((dir) => {
     directoryMap[dir.title] = dir._id;
   });
 
   for (let i = 0; i < count; i++) {
     const category = categories[i % categories.length];
     const directoryName = getDirectoryForCategory(category.title);
-    
-    products.push(new Product({
-      title: productNames[i % productNames.length],
-      description: `${productNames[i % productNames.length]} chất lượng cao, xuất xứ rõ ràng. ${faker.lorem.paragraph()}`,
-      category: category._id,
-      directory: directoryMap[directoryName],
-      originalPrice: faker.commerce.price({ min: 50000, max: 5000000, dec: 0 }),
-      salePrice: faker.commerce.price({ min: 40000, max: 4500000, dec: 0 }),
-      productPics: Array(3).fill().map(() => faker.image.urlLoremFlickr({ category: "medical" })),
-      quantity: faker.number.int({ min: 5, max: 100 }),
-      isLiquidation: faker.datatype.boolean({ probability: 0.15 }),
-    }));
+
+    products.push(
+      new Product({
+        title: productNames[i % productNames.length],
+        description: `${
+          productNames[i % productNames.length]
+        } chất lượng cao, xuất xứ rõ ràng. ${faker.lorem.paragraph()}`,
+        category: category._id,
+        directory: directoryMap[directoryName],
+        originalPrice: faker.commerce.price({
+          min: 50000,
+          max: 5000000,
+          dec: 0,
+        }),
+        salePrice: faker.commerce.price({ min: 40000, max: 4500000, dec: 0 }),
+        productPics: Array(3)
+          .fill()
+          .map(() => faker.image.urlLoremFlickr({ category: "medical" })),
+        quantity: faker.number.int({ min: 5, max: 100 }),
+        isLiquidation: faker.datatype.boolean({ probability: 0.15 }),
+      })
+    );
   }
 
   return Product.insertMany(products);
@@ -238,25 +257,29 @@ const generateProducts = async (categories, directories, count = 70) => {
 // Tạo bảo hành
 const generateWarranties = async (products, categories) => {
   const warranties = [];
-  
+
   // Tạo map để tra cứu category theo ID
   const categoryMap = {};
-  categories.forEach(cat => {
+  categories.forEach((cat) => {
     categoryMap[cat._id.toString()] = cat.title;
   });
 
-  const eligibleProducts = products.filter(product => {
+  const eligibleProducts = products.filter((product) => {
     const categoryTitle = categoryMap[product.category.toString()];
     return !categoryTitle.includes("tiêu hao");
   });
 
   for (const product of eligibleProducts) {
     if (faker.datatype.boolean({ probability: 0.8 })) {
-      warranties.push(new Warrantie({
-        productId: product._id,
-        durationMonths: faker.helpers.arrayElement([6, 12, 18, 24, 36]),
-        terms: `Bảo hành ${product.title}:\n1. ${faker.lorem.sentence()}\n2. ${faker.lorem.sentence()}`
-      }));
+      warranties.push(
+        new Warrantie({
+          productId: product._id,
+          durationMonths: faker.helpers.arrayElement([6, 12, 18, 24, 36]),
+          terms: `Bảo hành ${
+            product.title
+          }:\n1. ${faker.lorem.sentence()}\n2. ${faker.lorem.sentence()}`,
+        })
+      );
     }
   }
 
@@ -268,18 +291,21 @@ const generateOrders = async (users, products, count = 100) => {
   const orders = [];
 
   for (let i = 0; i < count; i++) {
-    const orderProducts = faker.helpers.arrayElements(products, faker.number.int({ min: 1, max: 6 }))
-      .map(product => ({
+    const orderProducts = faker.helpers
+      .arrayElements(products, faker.number.int({ min: 1, max: 6 }))
+      .map((product) => ({
         product: product._id,
-        quantity: faker.number.int({ min: 1, max: 5 })
+        quantity: faker.number.int({ min: 1, max: 5 }),
       }));
 
-    orders.push(new Order({
-      products: orderProducts,
-      status: faker.helpers.arrayElement(["chưa xử lí", "thành công"]),
-      orderBy: faker.helpers.arrayElement(users)._id,
-      orderIdMomo: `MOMO${faker.string.numeric(10)}`
-    }));
+    orders.push(
+      new Order({
+        products: orderProducts,
+        status: faker.helpers.arrayElement(["UNPAID", "PAID"]),
+        orderBy: faker.helpers.arrayElement(users)._id,
+        orderIdMomo: `MOMO${faker.string.numeric(10)}`,
+      })
+    );
   }
 
   return Order.insertMany(orders);
@@ -288,16 +314,18 @@ const generateOrders = async (users, products, count = 100) => {
 // Tạo tin tức
 const generateNews = async (count = 20) => {
   const news = [];
-  
+
   for (let i = 0; i < count; i++) {
-    news.push(new New({
-      title: newsTitles[i % newsTitles.length],
-      description: faker.lorem.paragraphs(3, '\n\n'),
-      newPic: faker.image.urlLoremFlickr({ category: 'medical' }),
-      status: faker.helpers.arrayElement(["ENABLE", "DISABLE"])
-    }));
+    news.push(
+      new New({
+        title: newsTitles[i % newsTitles.length],
+        description: faker.lorem.paragraphs(3, "\n\n"),
+        newPic: faker.image.urlLoremFlickr({ category: "medical" }),
+        status: faker.helpers.arrayElement(["ENABLE", "DISABLE"]),
+      })
+    );
   }
-  
+
   return New.insertMany(news);
 };
 
@@ -309,25 +337,25 @@ const generateAllData = async () => {
 
     console.log("Đang tạo danh mục...");
     const categories = await generateCategories();
-    
+
     console.log("Đang tạo thư mục...");
     const directories = await generateDirectories(categories);
-    
+
     console.log("Đang tạo người dùng...");
     const users = await generateUsers();
-    
+
     console.log("Đang tạo sản phẩm...");
     const products = await generateProducts(categories, directories, 55);
-    
+
     console.log("Đang tạo bảo hành...");
     await generateWarranties(products, categories);
-    
+
     console.log("Đang tạo đơn hàng...");
     await generateOrders(users, products, 100);
-    
+
     console.log("Đang tạo tin tức...");
     await generateNews();
-    
+
     console.log("✅ Tạo dữ liệu giả thành công!");
   } catch (error) {
     console.error("❌ Lỗi khi tạo dữ liệu:", error);

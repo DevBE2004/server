@@ -22,5 +22,5 @@ initRoutes(app);
 dbConnected();
 
 app.listen(port, () =>
-  console.log(`server on port:${port},htpp:localhost:${port}`)
+  console.log(`server on port: ${port}`)
 );

@@ -109,7 +109,7 @@ const ipnMomo = async (req, res) => {
       const orderPromise = Order.updateOne(
         { _id: oId },
         {
-          status: "thành công",
+          status: "PAID",
           orderBy,
           orderIdMomo: req.body.orderId,
         }
