@@ -90,11 +90,15 @@ const getAll = async (req, res) => {
     category,
     isFeatured,
     isLiquidation,
+    brand,
+    origin,
   } = req.query;
 
   const queries = {};
 
   if (title) queries.title = { $regex: new RegExp(title, "i") };
+  if (brand) queries.brand = { $regex: new RegExp(brand, "i") };
+  if (origin) queries.origin = { $regex: new RegExp(origin, "i") };
   if (directory) queries.directory = directory;
   if (category) queries.category = category;
   if (isFeatured !== undefined) queries.isFeatured = isFeatured === "true";
@@ -105,6 +109,8 @@ const getAll = async (req, res) => {
     queries.$or = [
       { title: { $regex: new RegExp(search, "i") } },
       { description: { $regex: new RegExp(search, "i") } },
+      { origin: { $regex: new RegExp(search, "i") } },
+      { brand: { $regex: new RegExp(search, "i") } },
     ];
 
   if (minPrice || maxPrice) {

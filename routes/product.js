@@ -33,6 +33,8 @@ router.post(
       isLiquidation: boolean,
       directory: stringReq,
       isFeatured: boolean,
+      brand: stringReq,
+      origin: stringReq,
     })
   ),
   ctrl.addProductByAdmin
@@ -60,6 +62,8 @@ router.put(
       isLiquidation: boolean,
       directory: stringReq,
       isFeatured: boolean,
+      brand: stringReq,
+      origin: stringReq,
     })
   ),
   ctrl.updateProductByAdmin

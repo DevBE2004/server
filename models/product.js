@@ -36,6 +36,14 @@ var productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    brand: {
+      type: String,
+      require: true,
+    },
+    origin: {
+      type: String,
+      require: true,
+    },
   },
   { timestamps: true }
 );

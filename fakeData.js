@@ -149,6 +149,30 @@ const getDirectoryForCategory = (categoryTitle) => {
     return "Dụng cụ nha khoa";
   }
 };
+// Danh sách các thương hiệu giả định (có thể thay bằng API/Faker nếu cần)
+const fakeBrands = [
+  "Dược Hậu Giang",
+  "Pharbaco",
+  "Traphaco",
+  "Vinapharm",
+  "Sanofi",
+  "Bayer",
+  "AstraZeneca",
+  "Pfizer",
+  "Merck",
+];
+
+// Danh sách các xuất xứ phổ biến
+const fakeOrigins = [
+  "Việt Nam",
+  "Mỹ",
+  "Pháp",
+  "Đức",
+  "Thụy Sĩ",
+  "Nhật Bản",
+  "Hàn Quốc",
+  "Ấn Độ",
+];
 
 // ==================== TẠO DỮ LIỆU ====================
 // Tạo danh mục
@@ -248,6 +272,8 @@ const generateProducts = async (categories, directories, count = 70) => {
         quantity: faker.number.int({ min: 5, max: 100 }),
         isLiquidation: faker.datatype.boolean({ probability: 0.15 }),
         isFeatured: faker.datatype.boolean({ probability: 0.15 }),
+        brand: faker.helpers.arrayElement(fakeBrands),
+        origin: faker.helpers.arrayElement(fakeOrigins),
       })
     );
   }
