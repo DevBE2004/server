@@ -6,6 +6,7 @@ const { v2 } = require("../configs/cloudinary");
 const sendEmail = require("../utils/sendEmail");
 
 const signIn = async (req, res) => {
+  mes;
   const user = await User.findOne({ email: req.body.email });
   if (!Boolean(user))
     throw new Error("người dùng k tồn tại hoặc mật khẩu sai.");
@@ -24,6 +25,7 @@ const signIn = async (req, res) => {
 };
 
 const signUp = async (req, res) => {
+  mes;
   const alreadyUser = await User.exists({ email: req.body.email });
 
   if (Boolean(alreadyUser)) throw new Error("người dùng đã tồn tại.");
@@ -39,6 +41,7 @@ const signUp = async (req, res) => {
 };
 
 const updatedProfile = async (req, res) => {
+  mes;
   const uploadResponse = await v2.uploader.upload(req.file.path, {
     public_id: `user_${req.user.id}`,
     overwrite: true,
@@ -60,6 +63,7 @@ const updatedProfile = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
+  mes;
   const user = await User.findById(req.user.id)
     .select("-password")
     .populate({ path: "cart", model: Product });
@@ -71,6 +75,7 @@ const getCurrent = async (req, res) => {
 };
 
 const getOne = async (req, res) => {
+  mes;
   const user = await User.findById(req.params.id).select("-password");
   return res.json({
     success: Boolean(user),
@@ -80,6 +85,7 @@ const getOne = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
+  mes;
   const {
     limit = 10,
     page = 1,
@@ -130,6 +136,7 @@ const getAll = async (req, res) => {
   });
 };
 const logOut = (req, res) => {
+  mes;
   const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
@@ -145,6 +152,7 @@ const logOut = (req, res) => {
 };
 
 const createUserByAdmin = async (req, res) => {
+  mes;
   const alreadyUser = await User.exists({ email: req.body.email });
   if (Boolean(alreadyUser)) throw new Error("người dùng đã tồn tại !");
   const newUser = await User.create({ ...req.body, profilePic: req.file.path });
@@ -169,6 +177,7 @@ const createUserByAdmin = async (req, res) => {
   });
 };
 const updateUserByAdmin = async (req, res) => {
+  mes;
   const uploadResponse = await v2.uploader.upload(req.file.path, {
     public_id: `user_${req.params.id}`,
     overwrite: true,
@@ -190,6 +199,7 @@ const updateUserByAdmin = async (req, res) => {
 };
 
 const deleteUserByAdmin = async (req, res) => {
+  mes;
   const deleteUser = await User.findByIdAndDelete(req.params.id);
   return res.json({
     success: Boolean(deleteUser),
@@ -200,6 +210,7 @@ const deleteUserByAdmin = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
+  mes;
   const user = await User.findOne({ email: req.body.email });
   if (!Boolean(user)) throw new Error("tài khoản không tồn tại.");
   const code = generateCode(6);
@@ -247,6 +258,7 @@ const forgotPassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
+  mes;
   const response = await User.updateOne({
     email: req.body.email,
     password: req.body.password,
@@ -267,22 +279,22 @@ const addOrRemoveFromCart = async (req, res) => {
     (item) => item.product.toString() === product.product
   );
   let update;
-  let message;
+  let mes;
 
   if (isProductInCart) {
     update = { $pull: { cart: { product: product.product } } };
-    message = "Đã xóa sản phẩm khỏi giỏ hàng.";
+    mes = "Đã xóa sản phẩm khỏi giỏ hàng.";
   } else {
     update = { $push: { cart: product } };
-    message = "Đã thêm sản phẩm vào giỏ hàng.";
+    mes = "Đã thêm sản phẩm vào giỏ hàng.";
   }
 
   const response = await User.findByIdAndUpdate(userId, update, { new: true });
 
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
-      ? message
+    mes: Boolean(response)
+      ? mes
       : "Cập nhật giỏ hàng thất bại. Vui lòng thử lại.",
     cart: response?.cart || [],
   });

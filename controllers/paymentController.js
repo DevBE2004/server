@@ -144,7 +144,7 @@ const ipnMomo = async (req, res) => {
     }
   }
 
-  res.status(200).json({ message: "IPN received" });
+  res.status(200).json({ mes: "IPN received" });
 };
 
 module.exports = { createPayment, returnByMomo, ipnMomo };

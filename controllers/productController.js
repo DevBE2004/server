@@ -21,7 +21,7 @@ const addProductByAdmin = async (req, res) => {
   });
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "thêm thành công."
       : "xảy ra một lỗi vui lòng thử lại.",
   });
@@ -61,7 +61,7 @@ const updateProductByAdmin = async (req, res) => {
 
   return res.json({
     success: Boolean(updatedProduct),
-    message: Boolean(updatedProduct)
+    mes: Boolean(updatedProduct)
       ? "cập nhật thành công"
       : "xảy ra một lỗi vui lòng thử lại",
   });
@@ -70,7 +70,7 @@ const deleteProductByAdmin = async (req, res) => {
   const response = await Product.findByIdAndDelete(req.params.id);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "xóa thành công"
       : "xảy ra một lỗi vui lòng thử lại",
   });
@@ -136,7 +136,7 @@ const getAll = async (req, res) => {
     ]);
   return res.json({
     success: Boolean(products.length),
-    message: Boolean(products.length)
+    mes: Boolean(products.length)
       ? "Thành công."
       : "Không tìm thấy sản phẩm.",
     data: products,
@@ -153,7 +153,7 @@ const getOne = async (req, res) => {
   const response = await Product.findById(req.params.id);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response) ? "thành công." : "sản phẩm không tồn tại.",
+    mes: Boolean(response) ? "thành công." : "sản phẩm không tồn tại.",
     data: response,
   });
 };

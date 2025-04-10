@@ -9,7 +9,7 @@ const addWarrantie = async (req, res) => {
   const response = await Warrantie.create(req.body);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "tạo thành công."
       : "tạo thất bại vui lòng thử lại",
   });
@@ -22,7 +22,7 @@ const updateWarrantie = async (req, res) => {
   );
   return res.json({
     success: Boolean(editWarrantie),
-    message: Boolean(editWarrantie)
+    mes: Boolean(editWarrantie)
       ? "cập nhật thành công."
       : "sửa thất bại vui lòng thử lại.",
   });
@@ -31,7 +31,7 @@ const deleteWarrantie = async (req, res) => {
   const response = await Warrantie.findByIdAndDelete(req.params.id);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "xóa thành công."
       : "xóa thất bại vui lòng thử lại.",
   });
@@ -40,7 +40,7 @@ const getOne = async (req, res) => {
   const response = await Warrantie.findById(req.params.id);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response) ? "thành công." : "thất bại.",
+    mes: Boolean(response) ? "thành công." : "thất bại.",
     data: response,
   });
 };
@@ -77,7 +77,7 @@ const getAll = async (req, res) => {
 
   return res.json({
     success: true,
-    message: warranties.length
+    mes: warranties.length
       ? "Lấy danh sách bảo hành thành công"
       : "Không tìm thấy chính sách bảo hành nào",
     data: warranties,

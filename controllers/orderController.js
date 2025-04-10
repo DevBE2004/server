@@ -6,7 +6,7 @@ const addOrder = async (req, res) => {
   const response = await Order.create(req.body);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "thêm thành công"
       : "thêm thất bại vui lòng thử lại",
   });
@@ -15,7 +15,7 @@ const updateOrder = async (req, res) => {
   const response = await Order.findByIdAndUpdate(req.params.id, req.body);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "sửa thành công"
       : "sửa thất bại vui lòng thử lại",
   });
@@ -24,7 +24,7 @@ const deleteOrder = async (req, res) => {
   const response = await Order.findByIdAndDelete(req.params.id);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "xóa thành công"
       : "xóa thất bại vui lòng thử lại",
   });
@@ -33,7 +33,7 @@ const getOne = async (req, res) => {
   const response = await Order.findById(req.params.id);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response) ? "thành công" : "thất bại vui lòng thử lại",
+    mes: Boolean(response) ? "thành công" : "thất bại vui lòng thử lại",
     data: response,
   });
 };
@@ -63,7 +63,7 @@ const getAll = async (req, res) => {
 
   return res.json({
     success: true,
-    message: orders.length
+    mes: orders.length
       ? "Lấy đơn hàng thành công"
       : "Không tìm thấy đơn hàng",
     data: orders,

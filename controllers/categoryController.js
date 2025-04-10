@@ -6,7 +6,7 @@ const addCategory = async (req, res) => {
   const response = await Category.create(req.body);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "thêm thành công."
       : "xảy ra một lỗi vui lòng thử lại.",
   });
@@ -17,7 +17,7 @@ const updateCategory = async (req, res) => {
   });
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "sửa thành công."
       : "loại sản phẩm không tồn tại.",
   });
@@ -26,7 +26,7 @@ const deleteCategory = async (req, res) => {
   const response = await Category.findByIdAndDelete(req.params.id);
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "xóa thành công."
       : "loại sản phẩm không tồn tại.",
   });
@@ -35,7 +35,7 @@ const getAll = async (req, res) => {
   const response = await Category.find();
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "thành công."
       : "không có loại sản phẩm nào cả.",
     data: response,
