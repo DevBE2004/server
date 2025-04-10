@@ -247,6 +247,7 @@ const generateProducts = async (categories, directories, count = 70) => {
           .map(() => faker.image.urlLoremFlickr({ category: "medical" })),
         quantity: faker.number.int({ min: 5, max: 100 }),
         isLiquidation: faker.datatype.boolean({ probability: 0.15 }),
+        isFeatured: faker.datatype.boolean({ probability: 0.15 }),
       })
     );
   }

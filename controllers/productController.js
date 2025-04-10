@@ -88,6 +88,8 @@ const getAll = async (req, res) => {
     search,
     directory,
     category,
+    isFeatured,
+    isLiquidation,
   } = req.query;
 
   const queries = {};
@@ -95,6 +97,9 @@ const getAll = async (req, res) => {
   if (title) queries.title = { $regex: new RegExp(title, "i") };
   if (directory) queries.directory = directory;
   if (category) queries.category = category;
+  if (isFeatured !== undefined) queries.isFeatured = isFeatured === "true";
+  if (isLiquidation !== undefined)
+    queries.isLiquidation = isLiquidation === "true";
 
   if (search)
     queries.$or = [

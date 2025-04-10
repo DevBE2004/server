@@ -32,6 +32,7 @@ router.post(
       quantity: numberReq,
       isLiquidation: boolean,
       directory: stringReq,
+      isFeatured: boolean,
     })
   ),
   ctrl.addProductByAdmin
@@ -58,6 +59,7 @@ router.put(
       quantity: numberReq,
       isLiquidation: boolean,
       directory: stringReq,
+      isFeatured: boolean,
     })
   ),
   ctrl.updateProductByAdmin
