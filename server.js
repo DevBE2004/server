@@ -15,12 +15,11 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 app.use(cookieParser());
 initRoutes(app);
 dbConnected();
 
-app.listen(port, () =>
-  console.log(`server on port: ${port}`)
-);
+app.listen(port, () => console.log(`server on port: ${port}`));
