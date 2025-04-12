@@ -128,8 +128,8 @@ const getAll = async (req, res) => {
 const logOut = (req, res) => {
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV !== "development",
-    sameSite: process.env.NODE_ENV !== "development" ? "strict" : "lax",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   };
 
   res.clearCookie("jwt", cookieOptions);
