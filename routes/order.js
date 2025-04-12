@@ -18,7 +18,7 @@ router.put(
   ctrl.updateOrder
 );
 router.delete("/delete-order/:id", verifyToken, ctrl.deleteOrder);
-router.get("/:id", verifyToken, ctrl.getOne);
-router.get("", verifyToken, ctrl.getAll);
+router.get("/:id", ctrl.getOne);
+router.get("", ctrl.getAll);
 
 module.exports = router;

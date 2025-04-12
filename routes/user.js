@@ -94,6 +94,12 @@ router.post(
   ctrl.forgotPassword
 );
 router.post(
+  "/check-code",
+  verifyToken,
+  validateInfo(Joi.object({ email, code: stringReq })),
+  ctrl.checkForgotPassCode
+);
+router.post(
   "/reset-password",
   verifyToken,
   validateInfo(Joi.object({ email, password: stringReq })),

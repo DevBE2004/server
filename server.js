@@ -4,7 +4,6 @@ const cors = require("cors");
 const initRoutes = require("./routes");
 const dbConnected = require("./configs/dbConnected");
 const cookieParser = require("cookie-parser");
-const { generateOrderId } = require("./utils/helper");
 
 const app = express();
 const port = process.env.PORT || 8888;
@@ -14,8 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(cookieParser());

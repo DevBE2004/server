@@ -27,7 +27,12 @@ router.put(
   ),
   ctrl.updateCategory
 );
-router.delete("/delete-category/:id", ctrl.deleteCategory);
+router.delete(
+  "/delete-category/:id",
+  verifyToken,
+  isAdmin,
+  ctrl.deleteCategory
+);
 router.get("", ctrl.getAll);
 
 module.exports = router;

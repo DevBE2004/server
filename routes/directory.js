@@ -24,7 +24,12 @@ router.put(
   }),
   ctrl.updateDirectory
 );
-router.delete("/delete-directory/:id", ctrl.deleteDirectory);
+router.delete(
+  "/delete-directory/:id",
+  verifyToken,
+  isAdmin,
+  ctrl.deleteDirectory
+);
 
 router.get("", ctrl.getAll);
 

@@ -6,7 +6,6 @@ const { v2 } = require("../configs/cloudinary");
 const sendEmail = require("../utils/sendEmail");
 
 const signIn = async (req, res) => {
-  mes;
   const user = await User.findOne({ email: req.body.email });
   if (!Boolean(user))
     throw new Error("người dùng k tồn tại hoặc mật khẩu sai.");
@@ -18,14 +17,13 @@ const signIn = async (req, res) => {
 
   return res.json({
     success: Boolean(isMatch),
-    message: Boolean(isMatch)
+    mes: Boolean(isMatch)
       ? "đăng nhập thành công"
       : "xảy ra một lỗi vui lòng thử lại!",
   });
 };
 
 const signUp = async (req, res) => {
-  mes;
   const alreadyUser = await User.exists({ email: req.body.email });
 
   if (Boolean(alreadyUser)) throw new Error("người dùng đã tồn tại.");
@@ -34,14 +32,11 @@ const signUp = async (req, res) => {
 
   return res.json({
     success: Boolean(newUser),
-    message: Boolean(newUser)
-      ? "tạo thành công"
-      : "xảy ra 1 lỗi vui lòng thử lại",
+    mes: Boolean(newUser) ? "tạo thành công" : "xảy ra 1 lỗi vui lòng thử lại",
   });
 };
 
 const updatedProfile = async (req, res) => {
-  mes;
   const uploadResponse = await v2.uploader.upload(req.file.path, {
     public_id: `user_${req.user.id}`,
     overwrite: true,
@@ -56,36 +51,33 @@ const updatedProfile = async (req, res) => {
   );
   return res.json({
     success: Boolean(updatedUser),
-    message: Boolean(updatedUser)
+    mes: Boolean(updatedUser)
       ? "cập nhật thông tin thành công."
       : "xảy ra một lỗi vui lòng thử lại!",
   });
 };
 
 const getCurrent = async (req, res) => {
-  mes;
   const user = await User.findById(req.user.id)
     .select("-password")
     .populate({ path: "cart", model: Product });
   return res.json({
     success: Boolean(user),
-    message: Boolean(user) ? "thành công." : "thất bại.",
+    mes: Boolean(user) ? "thành công." : "thất bại.",
     data: user,
   });
 };
 
 const getOne = async (req, res) => {
-  mes;
   const user = await User.findById(req.params.id).select("-password");
   return res.json({
     success: Boolean(user),
-    message: Boolean(user) ? "thành công." : "người dùng không tồn tại.",
+    mes: Boolean(user) ? "thành công." : "người dùng không tồn tại.",
     data: user,
   });
 };
 
 const getAll = async (req, res) => {
-  mes;
   const {
     limit = 10,
     page = 1,
@@ -123,9 +115,7 @@ const getAll = async (req, res) => {
 
   return res.json({
     success: Boolean(users.length),
-    message: Boolean(users.length)
-      ? "Thành công."
-      : "Không tìm thấy người dùng.",
+    mes: Boolean(users.length) ? "Thành công." : "Không tìm thấy người dùng.",
     data: users,
     pagination: {
       page: +page,
@@ -136,7 +126,6 @@ const getAll = async (req, res) => {
   });
 };
 const logOut = (req, res) => {
-  mes;
   const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
@@ -147,12 +136,11 @@ const logOut = (req, res) => {
 
   return res.status(200).json({
     success: true,
-    message: "Đăng xuất thành công!",
+    mes: "Đăng xuất thành công!",
   });
 };
 
 const createUserByAdmin = async (req, res) => {
-  mes;
   const alreadyUser = await User.exists({ email: req.body.email });
   if (Boolean(alreadyUser)) throw new Error("người dùng đã tồn tại !");
   const newUser = await User.create({ ...req.body, profilePic: req.file.path });
@@ -171,13 +159,12 @@ const createUserByAdmin = async (req, res) => {
   );
   return res.json({
     success: Boolean(updatedRecord),
-    message: Boolean(updatedRecord)
+    mes: Boolean(updatedRecord)
       ? "tạo thành công."
       : "xảy ra một lỗi vui lòng thử lại!",
   });
 };
 const updateUserByAdmin = async (req, res) => {
-  mes;
   const uploadResponse = await v2.uploader.upload(req.file.path, {
     public_id: `user_${req.params.id}`,
     overwrite: true,
@@ -192,25 +179,21 @@ const updateUserByAdmin = async (req, res) => {
   );
   return res.json({
     success: Boolean(updatedUser),
-    message: Boolean(updatedUser)
+    mes: Boolean(updatedUser)
       ? "sửa người dùng thành công."
       : "xảy ra một lỗi vui lòng thử lại!",
   });
 };
 
 const deleteUserByAdmin = async (req, res) => {
-  mes;
   const deleteUser = await User.findByIdAndDelete(req.params.id);
   return res.json({
     success: Boolean(deleteUser),
-    message: Boolean(deleteUser)
-      ? "xóa thành công."
-      : "người dùng không tồn tại!",
+    mes: Boolean(deleteUser) ? "xóa thành công." : "người dùng không tồn tại!",
   });
 };
 
 const forgotPassword = async (req, res) => {
-  mes;
   const user = await User.findOne({ email: req.body.email });
   if (!Boolean(user)) throw new Error("tài khoản không tồn tại.");
   const code = generateCode(6);
@@ -251,22 +234,37 @@ const forgotPassword = async (req, res) => {
 
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
+    mes: Boolean(response)
       ? "vui lòng kiểm tra email của bạn."
       : "xảy ra một lỗi vui lòng thử lại",
   });
 };
 
-const resetPassword = async (req, res) => {
-  mes;
-  const response = await User.updateOne({
-    email: req.body.email,
-    password: req.body.password,
+const checkForgotPassCode = async (req, res) => {
+  const user = await User.findOne({ email: req.body.email }).select(
+    "forgotPassCode"
+  );
+  const isMatch = req.body.code == user.forgotPassCode
+  return res.json({
+    success: Boolean(isMatch),
+    mes: Boolean(isMatch)
+      ? "mã xác thực chính xác."
+      : "mã xác thực sai. Vui lòng thử lại.",
   });
+};
+
+const resetPassword = async (req, res) => {
+  const response = await User.updateOne(
+    { email: req.body.email },
+    {
+      password: req.body.password,
+    },
+    { new: true }
+  );
   return res.json({
     success: Boolean(response),
-    message: Boolean(response)
-      ? "lấy lại mật khẩu thành công."
+    mes: Boolean(response)
+      ? "Đổi mật khẩu thành công."
       : "xảy ra một lỗi vui lòng thử lại.",
   });
 };
@@ -313,4 +311,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   addOrRemoveFromCart,
+  checkForgotPassCode,
 };

@@ -16,7 +16,8 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Order = require("./models/order");
 const Warrantie = require("./models/warrantie");
-const New = require("./models/new"); // Thêm model New
+const New = require("./models/new");
+const Banner = require("./models/banner");
 
 // ==================== DỮ LIỆU MẪU ====================
 const directories = [
@@ -313,6 +314,23 @@ const generateWarranties = async (products, categories) => {
   return Warrantie.insertMany(warranties);
 };
 
+const bannerImages = [
+  faker.image.urlLoremFlickr({ width: 1200, height: 400, category: "dental" }),
+  faker.image.urlLoremFlickr({ width: 1200, height: 400, category: "medical" }),
+  faker.image.urlLoremFlickr({ width: 1200, height: 400, category: "doctor" }),
+  faker.image.urlLoremFlickr({ width: 1200, height: 400, category: "clinic" }),
+  faker.image.urlLoremFlickr({ width: 1200, height: 400, category: "health" }),
+];
+
+const generateBanners = async () => {
+  const banners = bannerImages.map((image) => ({
+    bannerPic: image,
+    status: faker.helpers.arrayElement(["ENABLE", "DISABLE"]),
+  }));
+
+  return Banner.insertMany(banners);
+};
+
 // Tạo đơn hàng
 const generateOrders = async (users, products, count = 100) => {
   const orders = [];
@@ -361,6 +379,9 @@ const generateAllData = async () => {
   try {
     console.log("Đang xóa dữ liệu cũ...");
     await mongoose.connection.dropDatabase();
+
+    console.log("Đang tạo banner...");
+    await generateBanners();
 
     console.log("Đang tạo danh mục...");
     const categories = await generateCategories();
