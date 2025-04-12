@@ -7,6 +7,10 @@ const generateToken = (payload, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 2dd8237b20938deb068a41a5d81fc468f3e0b1c8
   });
   return token;
 };
