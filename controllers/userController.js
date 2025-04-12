@@ -172,7 +172,11 @@ const updateUserByAdmin = async (req, res) => {
   });
   const updatedUser = await User.findByIdAndUpdate(
     req.params.id,
-    { ...req.body, profilePic: uploadResponse.secure_url },
+    {
+      ...req.body,
+      password: bcryptJs.hashSync(req.body.password, bcryptJs.genSaltSync(10)),
+      profilePic: uploadResponse.secure_url,
+    },
     {
       new: true,
     }
@@ -244,7 +248,7 @@ const checkForgotPassCode = async (req, res) => {
   const user = await User.findOne({ email: req.body.email }).select(
     "forgotPassCode"
   );
-  const isMatch = req.body.code == user.forgotPassCode
+  const isMatch = req.body.code == user.forgotPassCode;
   return res.json({
     success: Boolean(isMatch),
     mes: Boolean(isMatch)

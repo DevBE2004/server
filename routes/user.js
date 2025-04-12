@@ -80,6 +80,7 @@ router.put(
       password: stringReq,
       mobile: phone,
       address: string,
+      role: stringReq,//thêm dòng này
     })
   ),
   ctrl.updateUserByAdmin
