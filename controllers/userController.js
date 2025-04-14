@@ -261,7 +261,7 @@ const resetPassword = async (req, res) => {
   const response = await User.updateOne(
     { email: req.body.email },
     {
-      password: req.body.password,
+      password: bcryptJs.hashSync(req.body.password, bcryptJs.genSaltSync(10)),
     },
     { new: true }
   );
