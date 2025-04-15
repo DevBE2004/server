@@ -191,6 +191,7 @@ const generateDirectories = async (categories) => {
     return {
       title,
       category: matchingCategories.map((cat) => cat._id),
+      directoryPic: faker.image.url(),
     };
   });
   return Directory.insertMany(directoryDocs);
