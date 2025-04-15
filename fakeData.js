@@ -18,6 +18,7 @@ const Order = require("./models/order");
 const Warrantie = require("./models/warrantie");
 const New = require("./models/new");
 const Banner = require("./models/banner");
+const Partner = require("./models/partner");
 
 // ==================== DỮ LIỆU MẪU ====================
 const directories = [
@@ -282,7 +283,15 @@ const generateProducts = async (categories, directories, count = 70) => {
 
   return Product.insertMany(products);
 };
+const generatePartners = async () => {
+  const partners = Array(10)
+    .fill()
+    .map(() => ({
+      partnerPic: faker.image.urlLoremFlickr({ category: "business" }),
+    }));
 
+  return Partner.insertMany(partners);
+};
 // Tạo bảo hành
 const generateWarranties = async (products, categories) => {
   const warranties = [];
@@ -358,15 +367,21 @@ const generateOrders = async (users, products, count = 100) => {
 };
 
 // Tạo tin tức
-const generateNews = async (count = 20) => {
+const generateNews = async (categories, count = 20) => {
   const news = [];
-
+  const category = [
+    "Tin công nghệ",
+    "Hướng dẫn chăm sóc răng miệng",
+    "Tin sức khỏe",
+    "Tin tức nổi bật",
+  ];
   for (let i = 0; i < count; i++) {
     news.push(
       new New({
         title: newsTitles[i % newsTitles.length],
         description: faker.lorem.paragraphs(3, "\n\n"),
         newPic: faker.image.urlLoremFlickr({ category: "medical" }),
+        category: faker.helpers.arrayElement(category),
         status: faker.helpers.arrayElement(["ENABLE", "DISABLE"]),
       })
     );
@@ -374,7 +389,6 @@ const generateNews = async (count = 20) => {
 
   return New.insertMany(news);
 };
-
 // ==================== HÀM CHÍNH ====================
 const generateAllData = async () => {
   try {
@@ -404,6 +418,9 @@ const generateAllData = async () => {
 
     console.log("Đang tạo tin tức...");
     await generateNews();
+
+    console.log("Đang tạo đối tác...");
+    await generatePartners();
 
     console.log("✅ Tạo dữ liệu giả thành công!");
   } catch (error) {

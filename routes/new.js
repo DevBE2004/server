@@ -5,6 +5,7 @@ const validateInfo = require("../middlewares/validateInfo");
 const { verifyToken, isAdmin } = require("../middlewares/verifyToken");
 const { stringReq, file } = require("../middlewares/joiSchema");
 const { upload } = require("../configs/cloudinary");
+const category = require("../models/category");
 
 router.post(
   "/add-new",
@@ -16,6 +17,7 @@ router.post(
       title: stringReq,
       description: stringReq,
       status: stringReq,
+      category: stringReq,
       newPic: file,
     })
   ),
@@ -31,6 +33,7 @@ router.put(
       title: stringReq,
       description: stringReq,
       status: stringReq,
+      category: stringReq,
       newPic: file,
     })
   ),

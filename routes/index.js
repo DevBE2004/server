@@ -11,6 +11,7 @@ const categoryRoutes = require("./category");
 const directoryRoutes = require("./directory");
 const newRoutes = require("./new");
 const bannerRoutes = require('./banner')
+const partnerRoutes = require('./partner')
 
 const initRoutes = (app) => {
   app.use("/api/user", userRoutes);
@@ -22,6 +23,7 @@ const initRoutes = (app) => {
   app.use("/api/payment", paymentRoutes);
   app.use("/api/new", newRoutes);
   app.use("/api/banner", bannerRoutes);
+  app.use("/api/parner", bannerRoutes);
 
   app.use(errorBadRequest);
   app.use(errorInternalServer);
