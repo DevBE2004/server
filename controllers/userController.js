@@ -272,35 +272,59 @@ const resetPassword = async (req, res) => {
       : "xảy ra một lỗi vui lòng thử lại.",
   });
 };
-const addOrRemoveFromCart = async (req, res) => {
-  const { product } = req.body;
-  const userId = req.user.id;
+const addToCart = async (req, res) => {
+  const { products } = req.body;
+  const user = await User.findById(req.user.id).select("cart");
 
-  const user = await User.findById(userId);
-  const isProductInCart = user.cart.some(
-    (item) => item.product.toString() === product.product
+  products.forEach((requestProduct) => {
+    const existingProductIndex = user.cart.findIndex(
+      (cartProduct) => cartProduct.product.toString() === requestProduct.product
+    );
+
+    if (existingProductIndex >= 0) {
+      user.cart[existingProductIndex].quantity = requestProduct.quantity;
+    } else {
+      user.cart.push({
+        product: requestProduct.product,
+        quantity: requestProduct.quantity,
+      });
+    }
+  });
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "đã thêm thành công.",
+  });
+};
+
+const removeFromCart = async (req, res) => {
+  const { pId } = req.body;
+  const user = await User.findById(req.user.id).select("cart");
+  user.cart = user.cart.filter((cartItem) => !pId.includes(cartItem.product));
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "đã xóa thành công.",
+  });
+};
+
+const clearCart = async (req, res) => {
+  const response = await User.findByIdAndUpdate(
+    req.user.id,
+    { cart: [] },
+    { new: true }
   );
-  let update;
-  let mes;
-
-  if (isProductInCart) {
-    update = { $pull: { cart: { product: product.product } } };
-    mes = "Đã xóa sản phẩm khỏi giỏ hàng.";
-  } else {
-    update = { $push: { cart: product } };
-    mes = "Đã thêm sản phẩm vào giỏ hàng.";
-  }
-
-  const response = await User.findByIdAndUpdate(userId, update, { new: true });
-
   return res.json({
     success: Boolean(response),
     mes: Boolean(response)
-      ? mes
-      : "Cập nhật giỏ hàng thất bại. Vui lòng thử lại.",
-    cart: response?.cart || [],
+      ? "cập nhật giỏ hàng thành công."
+      : "người dùng không tồn tại",
   });
 };
+
 module.exports = {
   signIn,
   signUp,
@@ -314,6 +338,8 @@ module.exports = {
   deleteUserByAdmin,
   forgotPassword,
   resetPassword,
-  addOrRemoveFromCart,
   checkForgotPassCode,
+  addToCart,
+  removeFromCart,
+  clearCart,
 };

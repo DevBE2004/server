@@ -1,9 +1,28 @@
 const Directory = require("../models/directory");
 const Category = require("../models/category");
+const { v2 } = require("cloudinary");
 const addDirectory = async (req, res) => {
   const alreadyDiretory = await Directory.exists({ title: req.body.title });
   if (Boolean(alreadyDiretory)) throw new Error("loại sản phẩm đã tồn tại.");
-  const response = await Directory.create(req.body);
+  const newDirectory = await Directory.create({
+    ...req.body,
+    profilePic: req.file.path,
+  });
+
+  const uploadResponse = await v2.uploader.upload(req.file.path, {
+    public_id: `directory_${newDirectory.id}`,
+    overwrite: true,
+    folder: "app/directory",
+  });
+
+  const response = await Directory.findByIdAndUpdate(
+    newDirectory._id,
+    {
+      ...req.body,
+      directoryPic: uploadResponse.secure_url,
+    },
+    { new: true }
+  );
   return res.json({
     success: Boolean(response),
     mes: Boolean(response)
@@ -12,9 +31,18 @@ const addDirectory = async (req, res) => {
   });
 };
 const updateDirectory = async (req, res) => {
-  const response = await Directory.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
+  const uploadResponse = await v2.uploader.upload(req.file.path, {
+    public_id: `directory_${req.params.id}`,
+    overwrite: true,
+    folder: "app/directory",
   });
+  const response = await Directory.findByIdAndUpdate(
+    req.params.id,
+    { ...req.body, directoryPic: uploadResponse.secure_url },
+    {
+      new: true,
+    }
+  );
   return res.json({
     success: Boolean(response),
     mes: Boolean(response) ? "sửa thành công." : "danh mục không tồn tại",

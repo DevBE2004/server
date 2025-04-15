@@ -12,6 +12,7 @@ var directorySchema = new mongoose.Schema(
     category: [
       { type: mongoose.Types.ObjectId, ref: "Category", required: true },
     ],
+    directoryPic: { type: String, required: true },
   },
   { timestamps: true }
 );

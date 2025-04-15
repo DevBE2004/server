@@ -8,6 +8,7 @@ const {
   phone,
   product,
   file,
+  products,
 } = require("../middlewares/joiSchema");
 const validateInfo = require("../middlewares/validateInfo");
 const { verifyToken, isAdmin } = require("../middlewares/verifyToken");
@@ -80,7 +81,7 @@ router.put(
       password: stringReq,
       mobile: phone,
       address: string,
-      role: stringReq,//thêm dòng này
+      role: stringReq, //thêm dòng này
     })
   ),
   ctrl.updateUserByAdmin
@@ -107,14 +108,24 @@ router.post(
   ctrl.resetPassword
 );
 router.put(
-  "/update-cart",
+  "/add-to-cart",
   verifyToken,
   validateInfo(
     Joi.object({
-      product,
+      products,
     })
   ),
-  ctrl.addOrRemoveFromCart
+  ctrl.addToCart
 );
-
+router.put(
+  "/remove-from-cart",
+  verifyToken,
+  validateInfo(
+    Joi.object({
+      pId: stringReq,
+    })
+  ),
+  ctrl.removeFromCart
+);
+router.put("/clear-cart", verifyToken, ctrl.clearCart);
 module.exports = router;
