@@ -23,7 +23,7 @@ const initRoutes = (app) => {
   app.use("/api/payment", paymentRoutes);
   app.use("/api/new", newRoutes);
   app.use("/api/banner", bannerRoutes);
-  app.use("/api/parner", bannerRoutes);
+  app.use("/api/parner", partnerRoutes);
 
   app.use(errorBadRequest);
   app.use(errorInternalServer);
