@@ -43,7 +43,7 @@ const updatePartner = async (req, res) => {
   });
 };
 const deletePartner = async (req, res) => {
-  const response = await Part.findByIdAndDelete(req.params.id);
+  const response = await Partner.findByIdAndDelete(req.params.id);
   return res.json({
     success: Boolean(response),
     mes: Boolean(response) ? "xóa thành công." : "đối tác không tồn tại.",
@@ -53,7 +53,7 @@ const getAll = async (req, res) => {
   const { status } = req.query;
   const queries = {};
   if (status) queries.status = status;
-  const response = await Part.find(queries);
+  const response = await Partner.find(queries);
   return res.json({
     success: Boolean(response),
     mes: Boolean(response) ? "thành công." : "không có đối tác nào cả.",
