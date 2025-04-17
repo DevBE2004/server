@@ -294,7 +294,7 @@ const addToCart = async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "đã thêm thành công.",
+    mes: "đã thêm thành công.",
   });
 };
 
@@ -307,7 +307,7 @@ const removeFromCart = async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "đã xóa thành công.",
+    mes: "đã xóa thành công.",
   });
 };
 
