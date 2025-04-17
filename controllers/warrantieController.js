@@ -60,7 +60,7 @@ const getAll = async (req, res) => {
   }
 
   if (terms) {
-    queries.terms = { $regex: terms, $options: "i" };
+    queries.terms = { $regex: new RegExp(terms, "i") };
   }
 
   const total = await Warrantie.countDocuments(queries);

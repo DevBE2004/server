@@ -50,9 +50,7 @@ const deletePartner = async (req, res) => {
   });
 };
 const getAll = async (req, res) => {
-  const { status } = req.query;
   const queries = {};
-  if (status) queries.status = status;
   const response = await Partner.find(queries);
   return res.json({
     success: Boolean(response),
