@@ -15,18 +15,14 @@ const updateOrder = async (req, res) => {
   const response = await Order.findByIdAndUpdate(req.params.id, req.body);
   return res.json({
     success: Boolean(response),
-    mes: Boolean(response)
-      ? "sửa thành công"
-      : "sửa thất bại vui lòng thử lại",
+    mes: Boolean(response) ? "sửa thành công" : "sửa thất bại vui lòng thử lại",
   });
 };
 const deleteOrder = async (req, res) => {
   const response = await Order.findByIdAndDelete(req.params.id);
   return res.json({
     success: Boolean(response),
-    mes: Boolean(response)
-      ? "xóa thành công"
-      : "xóa thất bại vui lòng thử lại",
+    mes: Boolean(response) ? "xóa thành công" : "xóa thất bại vui lòng thử lại",
   });
 };
 const getOne = async (req, res) => {
@@ -39,11 +35,17 @@ const getOne = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
-  const { limit = 10, page = 1, sort = "-createdAt", status } = req.query;
-
+  const {
+    limit = 10,
+    page = 1,
+    sort = "-createdAt",
+    status,
+    orderBy,
+  } = req.query;
   const queries = {};
 
   if (status) queries.status = status;
+  if (orderBy) queries.orderBy = orderBy;
 
   const total = await Order.countDocuments(queries);
   const totalPages = Math.ceil(total / limit);
@@ -63,9 +65,7 @@ const getAll = async (req, res) => {
 
   return res.json({
     success: true,
-    mes: orders.length
-      ? "Lấy đơn hàng thành công"
-      : "Không tìm thấy đơn hàng",
+    mes: orders.length ? "Lấy đơn hàng thành công" : "Không tìm thấy đơn hàng",
     data: orders,
     pagination: {
       page: +page,
