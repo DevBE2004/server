@@ -60,7 +60,7 @@ const updatedProfile = async (req, res) => {
 const getCurrent = async (req, res) => {
   const user = await User.findById(req.user.id)
     .select("-password")
-    .populate({ path: "cart", model: Product });
+    .populate({ path: "cart.product", model: Product });
   return res.json({
     success: Boolean(user),
     mes: Boolean(user) ? "thành công." : "thất bại.",
