@@ -44,6 +44,10 @@ var productSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    introduce: {
+      type: String,
+      require: true,
+    },
   },
   { timestamps: true }
 );

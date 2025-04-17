@@ -277,6 +277,7 @@ const generateProducts = async (categories, directories, count = 70) => {
         isFeatured: faker.datatype.boolean({ probability: 0.15 }),
         brand: faker.helpers.arrayElement(fakeBrands),
         origin: faker.helpers.arrayElement(fakeOrigins),
+        introduce: faker.lorem.paragraph(),
       })
     );
   }

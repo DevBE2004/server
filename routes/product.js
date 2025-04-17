@@ -35,6 +35,7 @@ router.post(
       isFeatured: boolean,
       brand: stringReq,
       origin: stringReq,
+      introduce: stringReq,
     })
   ),
   ctrl.addProductByAdmin
@@ -64,6 +65,7 @@ router.put(
       isFeatured: boolean,
       brand: stringReq,
       origin: stringReq,
+      introduce: stringReq,
     })
   ),
   ctrl.updateProductByAdmin
