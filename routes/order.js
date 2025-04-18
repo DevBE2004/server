@@ -8,13 +8,27 @@ const { string, stringReq, products } = require("../middlewares/joiSchema");
 router.post(
   "/add-order",
   verifyToken,
-  validateInfo(Joi.object({ products, status: string, orderBy: stringReq })),
+  validateInfo(
+    Joi.object({
+      products,
+      status: string,
+      orderBy: stringReq,
+      address: stringReq,
+    })
+  ),
   ctrl.addOrder
 );
 router.put(
   "/update-order/:id",
   verifyToken,
-  validateInfo(Joi.object({ products, status: string, orderBy: stringReq })),
+  validateInfo(
+    Joi.object({
+      products,
+      status: string,
+      orderBy: stringReq,
+      address: stringReq,
+    })
+  ),
   ctrl.updateOrder
 );
 router.delete("/delete-order/:id", verifyToken, ctrl.deleteOrder);
