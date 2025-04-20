@@ -6,7 +6,7 @@ const addDirectory = async (req, res) => {
   if (Boolean(alreadyDiretory)) throw new Error("loại sản phẩm đã tồn tại.");
   const newDirectory = await Directory.create({
     ...req.body,
-    profilePic: req.file.path,
+    directoryPic: req.file.path,
   });
 
   const uploadResponse = await v2.uploader.upload(req.file.path, {
