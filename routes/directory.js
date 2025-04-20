@@ -4,17 +4,20 @@ const validateInfo = require("../middlewares/validateInfo");
 const { verifyToken, isAdmin } = require("../middlewares/verifyToken");
 const { category, stringReq, file } = require("../middlewares/joiSchema");
 const { upload } = require("../configs/cloudinary");
+const Joi = require("joi");
 
 router.post(
   "/add-directory",
   verifyToken,
   isAdmin,
   upload.single("directoryPic"),
-  validateInfo({
-    title: stringReq,
-    category,
-    directoryPic: file,
-  }),
+  validateInfo(
+    Joi.object({
+      title: stringReq,
+      category,
+      directoryPic: file,
+    })
+  ),
   ctrl.addDirectory
 );
 router.put(
@@ -22,11 +25,13 @@ router.put(
   verifyToken,
   isAdmin,
   upload.single("directoryPic"),
-  validateInfo({
-    title: stringReq,
-    category,
-    directoryPic: file,
-  }),
+  validateInfo(
+    Joi.object({
+      title: stringReq,
+      category,
+      directoryPic: file,
+    })
+  ),
   ctrl.updateDirectory
 );
 router.delete(

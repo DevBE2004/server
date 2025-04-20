@@ -12,7 +12,6 @@ const validateInfo = (schema) => (req, res, next) => {
     ...req.body,
     ...fileData,
   };
-
   const { error } = schema.validate(dataToValidate);
   if (error) {
     const message = error.details[0].message?.replaceAll(`\"`, "");
