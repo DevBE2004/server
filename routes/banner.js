@@ -15,6 +15,7 @@ router.post(
     Joi.object({
       status: stringReq,
       bannerPic: file,
+      url: stringReq,
     })
   ),
   ctrl.addBanner
@@ -28,6 +29,7 @@ router.put(
     Joi.object({
       status: stringReq,
       bannerPic: file,
+      url: stringReq,
     })
   ),
   ctrl.updateBanner

@@ -12,6 +12,10 @@ var bannerSchema = new mongoose.Schema(
       enum: ["ENABLE", "DISABLE"],
       default: "ENABLE",
     },
+    url: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
